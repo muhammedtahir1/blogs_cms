@@ -14,11 +14,11 @@ interface ContentFormProps {
   initialData?: {
     title: string
     slug: string
-    content?: any  // Add content to initialData
+    content?: unknown  // Add content to initialData
   }
 }
 
-export default function ContentForm({ actionType, html, id, initialData }: ContentFormProps) {
+export default function ContentForm({ actionType, id, initialData }: ContentFormProps) {
   const [title, setTitle] = useState(initialData?.title || '')
   const [slug, setSlug] = useState(initialData?.slug || '')
   const [content, setContent] = useState({})

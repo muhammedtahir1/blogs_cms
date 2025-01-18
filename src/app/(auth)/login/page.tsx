@@ -1,8 +1,5 @@
 "use client"
 import {
-  useState
-} from "react"
-import {
   toast
 } from "sonner"
 import {
@@ -12,9 +9,6 @@ import {
   zodResolver
 } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import {
-  cn
-} from "@/lib/utils"
 import {
   Button
 } from "@/components/ui/button"
@@ -30,7 +24,7 @@ import {
 import {
   Input
 } from "@/components/ui/input"
-import { auth } from "@/lib/auth"
+// import { auth } from "@/lib/auth"
 
 const formSchema = z.object({
   email: z.string(),
@@ -47,7 +41,7 @@ export default function MyForm() {
   function onSubmit(values: z.infer < typeof formSchema > ) {
     try {
       console.log(values);
-      auth.api.signInEmail({})
+      // auth.api.signInEmail()
       toast(
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(values, null, 2)}</code>

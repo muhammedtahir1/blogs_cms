@@ -8,21 +8,22 @@ export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [image, setImage] = useState<File | null>(null);
+  // const [image, setImage] = useState<File | null>(null);
  
   const signUp = async () => {
-    const { data, error } = await authClient.signUp.email({ 
+    // const { data, error } = 
+    await authClient.signUp.email({ 
         email, 
         password, 
         name, 
         // image: image ? convertImageToBase64(image) : undefined, 
      }, { 
-        onRequest: (ctx) => { 
-         //show loading
-        }, 
-        onSuccess: (ctx) => { 
-          //redirect to the dashboard
-        }, 
+        // onRequest: (ctx) => { 
+        //  //show loading
+        // }, 
+        // onSuccess: (ctx) => { 
+        //   //redirect to the dashboard
+        // }, 
         onError: (ctx) => { 
           alert(ctx.error.message); 
         }, 

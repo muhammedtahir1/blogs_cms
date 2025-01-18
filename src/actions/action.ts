@@ -30,12 +30,11 @@ const createBlog = async (data: {
             return { error: "Failed to create the blog" }
         }
 
-    } catch (error: any) {
-        if (error.code === 'P2002') {
-            return { error: 'That slug already exists.' }
-        }
-
-        return { error: error.message || 'Failed to create the blog.' }
+    } catch (e) {
+        // if (error.code === 'P2002') {
+        //     return { error: 'That slug already exists.' }
+        // }
+        return { error: (e as Error).message ||'Failed to create the blog.'}
     }
     // revalidatePath('/')
 
@@ -68,26 +67,25 @@ const editBlog = async (data: {
         revalidatePath('/')
         return { success: true, post }
 
-    } catch (error: any) {
-        if (error.code === 'P2002') {
-            return { error: 'That slug already exists.' }
-        }
-        return { error: error.message || 'Failed to update the blog.' }
+    } catch (e) {
+        // if (error.code === 'P2002') {
+        //     return { error: 'That slug already exists.' }
+        // }
+        
+        return { error: (e as Error).message || 'Failed to update the blog.'}
     }
 }
 
 const deleteBlog = async({id} : {id : Post["id"]})=> {
 
-    let deletedBlog
     try {
-        deletedBlog = await prisma.post.delete({
+        await prisma.post.delete({
             where: {
                 id : id
             }
         })
-        
-    } catch (error) {
-        return { error: 'Failed to delete the blog.' }
+    } catch (e) {
+        return { error: (e as Error).message || 'Failed to delete the blog.' }
     }
 
     revalidatePath("/app")
