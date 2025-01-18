@@ -5,6 +5,7 @@
 
 3. Implement header authorization with uuid
     - so that only one's blogs should be visible to himself
+    - create relation between USER and POST 
     - how??
 
 4. Authentication on /api/all
