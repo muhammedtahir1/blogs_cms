@@ -21,9 +21,17 @@ import {
 } from "@/components/ui/dropdown-menu"
 import DeleteBtn from '@/components/delete-btn'
 import EditBtn from '@/components/edit-btn'
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
 
 
 const page = async () => {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
+    if (!session) {
+        return <div>Not authenticated</div>
+    }
     const allBlogs = await prisma.post.findMany()
     return (
         <div>
@@ -59,10 +67,10 @@ const page = async () => {
                                         {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
                                         {/* <DropdownMenuSeparator /> */}
                                         <DropdownMenuItem>
-                                            <DeleteBtn id={blog.id}/>
-                                        </DropdownMenuItem>
+                                            <DeleteBtn id={blog.id} />
+                                        </DropdownMenuItem> 
                                         <DropdownMenuItem>
-                                            <EditBtn/>
+                                            <EditBtn id={blog.id} />
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>

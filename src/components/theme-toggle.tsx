@@ -16,8 +16,8 @@ import {
 export function ThemeToggle() {
   const { setTheme } = useTheme()
 
-//   const mounted = useMounted()
-//   if (!mounted) return null
+  // const mounted = useMounted()
+  // if (!mounted) return null
 
   return (
     <DropdownMenu>

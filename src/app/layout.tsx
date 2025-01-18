@@ -5,9 +5,10 @@ import Header from '@/components/header'
 import Footer from '@/components/footer'
 import { ThemeProvider } from '@/components/theme-provider'
 
-// import './prosemirror.css'
-import "../app/prosemirror.css"
-import '@/app/globals.css'
+import './prosemirror.css'
+// import "../app/prosemirror.css"
+import './globals.css'
+
 import { Toaster } from '@/components/ui/sonner'
 
 const inter = Inter({ subsets: ['latin'] })

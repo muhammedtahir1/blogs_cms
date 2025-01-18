@@ -1,6 +1,5 @@
 "use server"
 
-import { Toast } from "@/components/ui/toast"
 import prisma from "@/lib/db"
 import { Post } from "@prisma/client"
 import { revalidatePath } from "next/cache"
@@ -8,20 +7,22 @@ import { revalidatePath } from "next/cache"
 const createBlog = async (data: {
     title: string,
     slug: string,
-    content: string
+    content: object
 }) => {
 
     let post
     console.log(data);
+    console.log(data.content);
+
+    const serializedContent = JSON.parse(JSON.stringify(data.content))
+
 
     try {
-       return 
-    
         post = await prisma.post.create({
             data: {
                 title: data.title,
                 slug: data.slug,
-                content: data.content
+                content: serializedContent
             }
         })
 
@@ -36,47 +37,44 @@ const createBlog = async (data: {
 
         return { error: error.message || 'Failed to create the blog.' }
     }
-    revalidatePath('/')
+    // revalidatePath('/')
 
 }
+
 const editBlog = async (data: {
-    id: Post['id'],
+    id: number,
     title: string,
     slug: string,
-    content: string
+    content: object
 }) => {
-
-    let post
+    const serializedContent = JSON.parse(JSON.stringify(data.content))
 
     try {
-        post = await prisma.post.update({
+        const post = await prisma.post.update({
             where: {
                 id: data.id
-
-            }
-            , data: {
+            },
+            data: {
                 title: data.title,
                 slug: data.slug,
-                content: data.content
+                content: serializedContent
             }
         })
 
         if (!post) {
-            return { error: "Failed to create the blog" }
+            return { error: "Failed to update the blog" }
         }
 
+        revalidatePath('/')
+        return { success: true, post }
+
     } catch (error: any) {
-        // TODO:
-        // if (error.code === 'P2002') {
-        //     return { error: 'That slug already exists.' }
-        // }
-
-        return { error: error.message || 'Failed to create the blog.' }
+        if (error.code === 'P2002') {
+            return { error: 'That slug already exists.' }
+        }
+        return { error: error.message || 'Failed to update the blog.' }
     }
-    revalidatePath('/')
-
 }
-
 
 const deleteBlog = async({id} : {id : Post["id"]})=> {
 

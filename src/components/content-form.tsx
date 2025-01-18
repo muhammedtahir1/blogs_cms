@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { parse } from 'himalaya'
 import Editor from '@/components/editor/editor'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,36 +14,35 @@ interface ContentFormProps {
   initialData?: {
     title: string
     slug: string
+    content?: any  // Add content to initialData
   }
 }
 
 export default function ContentForm({ actionType, html, id, initialData }: ContentFormProps) {
   const [title, setTitle] = useState(initialData?.title || '')
   const [slug, setSlug] = useState(initialData?.slug || '')
-  const [content, setContent] = useState<string>('')
+  const [content, setContent] = useState({})
   const [pending, setPending] = useState(false)
-  const [defaultValue, setDefaultValue] = useState({
-    type: 'doc',
-    content: [
-      {
-        type: 'paragraph',
-        content: []
-      },
-      {
-        type: 'paragraph',
-        content: ["Hi there", ]
-      },
-      {
-        type: 'paragraph',
-        content: ["Hi there", "2"]
-
-      },
-
-    ]
-  })
+  const [defaultValue, setDefaultValue] = useState(
+    initialData?.content || {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: []
+        }
+      ]
+    }
+  )
 
   useEffect(() => {
-    // Generate slug from title only if slug hasn't been set from initialData
+    if (initialData?.content) {
+      setContent(initialData.content)
+      setDefaultValue(initialData.content)
+    }
+  }, [initialData])
+
+  useEffect(() => {
     const generateSlug = (text: string) => {
       return text
         .toLowerCase()
@@ -57,36 +55,7 @@ export default function ContentForm({ actionType, html, id, initialData }: Conte
     }
   }, [title, initialData?.slug])
 
-  useEffect(() => {
-    // Handle initialization for edit mode
-    const initializeEditMode = async () => {
-      if (actionType === "edit" && html) {
-        try {
-          // Try to parse the HTML content into the editor's required format
-          const parsedContent = parse(html)
-          setDefaultValue(parsedContent)
-          setContent(html)  // Set initial content
-        } catch (error) {
-          toast.error('Error parsing HTML content')
-          console.error('Error parsing HTML:', error)
-        }
-      }
-    }
-
-    initializeEditMode()
-  }, [actionType, html])
-
   const handleSubmit = async () => {
-    if (!title.trim()) {
-      toast.error('Title is required')
-      return
-    }
-
-    if (!content.trim()) {
-      toast.error('Content is required')
-      return
-    }
-
     setPending(true)
     try {
       const result = actionType === "create" 
@@ -125,11 +94,11 @@ export default function ContentForm({ actionType, html, id, initialData }: Conte
         />
       </div>
 
-      <Editor 
+      <Editor
         initialValue={defaultValue} 
-        onChange={setContent} 
+        onChange={setContent}
       />
-      
+
       <Button
         onClick={handleSubmit}
         disabled={pending}
