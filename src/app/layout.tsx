@@ -29,7 +29,7 @@ export default function RootLayout({
       className='scroll-smooth antialiased'
       suppressHydrationWarning
     >
-      <body className={`flex min-h-screen flex-col ${inter.className} px-20` }>
+      <body className={`flex min-h-screen flex-col ${inter.className} px-3 md:px-20` }>
         <ThemeProvider
           enableSystem
           attribute='class'
