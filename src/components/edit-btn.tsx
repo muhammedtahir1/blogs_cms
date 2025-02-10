@@ -1,12 +1,17 @@
 "use client"
 import { Button } from './ui/button'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 export default function EditBtn({ id }: { id: number }) {
+
+  const pathname = usePathname()
+  const workspace_name = pathname.split("/")[3]
+
+
   const router = useRouter()
   
   return (
-    <Button onClick={() => router.push(`/app/edit/${id}`)}>
+    <Button className='w-full' onClick={() => router.push(`/app/workspace/${workspace_name}/edit/${id}`)}>
       Edit
     </Button>
   )

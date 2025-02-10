@@ -17,7 +17,7 @@ export default async function EditPage({ params }: { params: Params }) {
   // const id = parseInt(params.id, 10)
   const { id } = await params
   const parsedId = parseInt(id)
-  const post = await prisma.post.findUnique({
+  const post = await prisma.blog.findUnique({
     where: { id: parsedId}
   })
 

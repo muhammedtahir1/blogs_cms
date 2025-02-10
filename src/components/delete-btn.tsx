@@ -1,10 +1,10 @@
 "use client"
 import { deleteBlog } from '@/actions/action'
 import { Button } from './ui/button'
-import { Post } from '@prisma/client'
 import { toast } from 'sonner'
+import { Blog } from '@prisma/client'
 
-export default function DeleteBtn({id} : {id: Post["id"]}) {
+export default function DeleteBtn({id} : {id: Blog["id"]}) {
 
   async function onSubmit(){
     const error = await deleteBlog({id})
@@ -15,6 +15,6 @@ export default function DeleteBtn({id} : {id: Post["id"]}) {
   }
 
   return (
-    <Button variant={"destructive"} onClick={()=>onSubmit()}>Delete</Button>
+    <Button className='w-full' variant={"destructive"} onClick={()=>onSubmit()}>Delete</Button>
   )
 }

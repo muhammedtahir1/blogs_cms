@@ -6,7 +6,7 @@ import Editor from '@/components/editor/editor'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { createBlog, editBlog } from '@/actions/action'
-import { usePathname } from 'next/navigation'
+import { redirect, usePathname } from 'next/navigation'
 
 interface ContentFormProps {
   id?: number
@@ -60,7 +60,7 @@ export default function ContentForm({ actionType, id, initialData }: ContentForm
   const pathname = usePathname()
   // get workspace name
   const workspace_name = pathname.split("/")[3]
-  console.log(workspace_name);
+  // console.log(workspace_name);
 
   const handleSubmit = async () => {
     setPending(true)
@@ -73,6 +73,7 @@ export default function ContentForm({ actionType, id, initialData }: ContentForm
         toast.error(result.error)
       } else {
         toast.success(`Blog ${actionType === "create" ? "created" : "updated"} successfully`)
+        redirect(`/app/workspace/${workspace_name}`)
       }
     } catch (error) {
       toast.error('An error occurred while saving')

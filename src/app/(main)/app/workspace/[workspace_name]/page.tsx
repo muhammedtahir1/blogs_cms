@@ -108,10 +108,10 @@ const page = async ({ params }: { params: Promise<{ workspace_name: string }> })
                                     <DropdownMenuContent>
                                         {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
                                         {/* <DropdownMenuSeparator /> */}
-                                        <DropdownMenuItem>
+                                        <DropdownMenuItem className="w-full p-0">
                                             <DeleteBtn id={blog.id} />
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem>
+                                        <DropdownMenuItem className="w-full px-0">
                                             <EditBtn id={blog.id} />
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>

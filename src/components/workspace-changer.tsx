@@ -13,7 +13,6 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { getWorkspaces } from "@/actions/action";
 
-// Updated types to match your Prisma model
 type Workspace = {
   id: number;
   name: string;
@@ -30,10 +29,9 @@ type WorkspaceResponse = {
 export default function WorkspaceChanger() {
   const path = usePathname();
   const router = useRouter();
-  const [currentWorkspace, setCurrentWorkspace] = useState('');
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [currentWorkspace, setCurrentWorkspace] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const id = useId();
   
   useEffect(() => {
@@ -41,59 +39,54 @@ export default function WorkspaceChanger() {
       try {
         setIsLoading(true);
         const response = await getWorkspaces();
-        
-        // Type assertion to handle the response
         const typedResponse = response as WorkspaceResponse;
         
         if (typedResponse.success && typedResponse.data) {
           setWorkspaces(typedResponse.data);
           
-          // Set default workspace if we have workspaces and none is selected
-          if (typedResponse.data.length > 0 && !currentWorkspace) {
-            setCurrentWorkspace(String(typedResponse.data[0].id));
+          // Always set the first workspace as default
+          if (typedResponse.data.length > 0) {
+            const firstWorkspace = typedResponse.data[0];
+            setCurrentWorkspace(firstWorkspace.name);
+            
+            // Redirect to the first workspace if not already on a workspace page
+            if (!path.startsWith('/app/workspace/')) {
+              router.push(`/app/workspace/${firstWorkspace.slug}`);
+            }
           }
-        } else {
-          setError('Failed to fetch workspaces');
         }
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'An error occurred');
+        console.error(e);
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchWorkspaces();
-  }, [currentWorkspace]);
+  }, []);
   
   useEffect(() => {
     if (path.startsWith('/app/workspace/')) {
       const workspace = path.split('/')[3];
-      console.log(workspace);
-      setCurrentWorkspace(workspace);
+      // Find the workspace that matches the current path slug
+      const matchedWorkspace = workspaces.find(w => w.slug === workspace);
+      if (matchedWorkspace) {
+        setCurrentWorkspace(matchedWorkspace.name);
+      }
     }
-  }, [path]);
+  }, [path, workspaces]);
 
-  const handleWorkspaceChange = (workspace: string) => {
-    setCurrentWorkspace(workspace);
-    const slug = workspace.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-') .replace(/-+/g, '-')
-
-    router.push(`/app/workspace/${slug}`);
+  const handleWorkspaceChange = (workspaceName: string) => {
+    // Find the selected workspace to get its slug
+    const selectedWorkspace = workspaces.find(w => w.name === workspaceName);
+    if (selectedWorkspace) {
+      setCurrentWorkspace(workspaceName);
+      router.push(`/app/workspace/${selectedWorkspace.slug}`);
+    }
   };
 
   if (isLoading) {
-    return (
-      <div className="space-y-2">
-        <Label>Loading workspaces...</Label>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-2">
-        <Label className="text-red-500">Error: {error}</Label>
-      </div>
-    );
+    return <div className="space-y-2"><Label>Loading workspaces...</Label></div>;
   }
 
   return (
