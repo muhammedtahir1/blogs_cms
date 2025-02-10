@@ -6,6 +6,7 @@ import Editor from '@/components/editor/editor'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { createBlog, editBlog } from '@/actions/action'
+import { usePathname } from 'next/navigation'
 
 interface ContentFormProps {
   id?: number
@@ -55,11 +56,17 @@ export default function ContentForm({ actionType, id, initialData }: ContentForm
     }
   }, [title, initialData?.slug])
 
+
+  const pathname = usePathname()
+  // get workspace name
+  const workspace_name = pathname.split("/")[3]
+  console.log(workspace_name);
+
   const handleSubmit = async () => {
     setPending(true)
     try {
-      const result = actionType === "create" 
-        ? await createBlog({ title, slug, content })
+      const result = actionType === "create"
+        ? await createBlog({ title, slug, content, workspace: workspace_name })
         : await editBlog({ id: id!, title, slug, content })
 
       if (result?.error) {
@@ -95,7 +102,7 @@ export default function ContentForm({ actionType, id, initialData }: ContentForm
       </div>
 
       <Editor
-        initialValue={defaultValue} 
+        initialValue={defaultValue}
         onChange={setContent}
       />
 

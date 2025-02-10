@@ -24,6 +24,10 @@ import {
 import {
   Input
 } from "@/components/ui/input"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
+import { redirect } from "next/navigation"
+import { authClient } from "@/lib/auth-client"
 // import { auth } from "@/lib/auth"
 
 const formSchema = z.object({
@@ -32,19 +36,40 @@ const formSchema = z.object({
 });
 
 export default function MyForm() {
-
-  const form = useForm < z.infer < typeof formSchema >> ({
+  // const session = await auth.api.getSession({
+  //   headers: await headers()
+  // })
+  // if (session) {
+  //   redirect('/app')
+  // }
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
 
   })
 
-  function onSubmit(values: z.infer < typeof formSchema > ) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       console.log(values);
-      // auth.api.signInEmail()
+      await authClient.signIn.email({
+        email: values.email,
+        password: values.password,
+      }, {
+        onRequest: () => {
+          //show loading
+        },
+        onSuccess: () => {
+          //redirect to dashboard
+          alert("successfull")
+          redirect('/app')
+          // TODO
+        },
+        onError: (ctx) => {
+          alert(ctx.error.message)
+        }
+      })
       toast(
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
+          {/* <code className="text-white">{JSON.stringify(values, null, 2)}</code> */}
         </pre>
       );
     } catch (error) {
@@ -56,7 +81,7 @@ export default function MyForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10">
-        
+
         <FormField
           control={form.control}
           name="email"
@@ -64,18 +89,18 @@ export default function MyForm() {
             <FormItem>
               <FormLabel>email</FormLabel>
               <FormControl>
-                <Input 
-                placeholder="tahir@gmail.com"
-                
-                type="email"
-                {...field} />
+                <Input
+                  placeholder="tahir@gmail.com"
+
+                  type="email"
+                  {...field} />
               </FormControl>
               <FormDescription>This is your public display name.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="password"
@@ -83,11 +108,11 @@ export default function MyForm() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input 
-                placeholder="password"
-                
-                type=""
-                {...field} />
+                <Input
+                  placeholder="password"
+
+                  type=""
+                  {...field} />
               </FormControl>
               <FormDescription>This is your public display name.</FormDescription>
               <FormMessage />

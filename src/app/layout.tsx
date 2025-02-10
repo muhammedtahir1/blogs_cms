@@ -29,16 +29,15 @@ export default function RootLayout({
       className='scroll-smooth antialiased'
       suppressHydrationWarning
     >
-      <body className={`flex min-h-screen flex-col ${inter.className} px-3 md:px-20` }>
+      <body className={` ${inter.className} `}>
         <ThemeProvider
           enableSystem
           attribute='class'
           defaultTheme='system'
           disableTransitionOnChange
         >
-          <Header />
+
           <main className='grow'>{children}</main>
-          <Footer />
           <Toaster />
         </ThemeProvider>
       </body>
